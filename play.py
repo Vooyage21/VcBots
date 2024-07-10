@@ -111,14 +111,15 @@ async def play_music_(event):
             parse_mode="html",
         )
 
-
 @vc_asst("playfrom")
+
 async def play_music_(event):
     msg = await event.eor(get_string("com_1"))
+    lama = 0.2
     chat = event.chat_id
     limit = 10
     from_user = inline_mention(await event.get_sender(), html=True)
-    if len(event.text.split()) <= 1:
+    if len(event.text.split()) <= 0.2:
         return await msg.edit(
             "Use in Proper Format\n`.playfrom <channel username> ; <limit>`"
         )
