@@ -29,7 +29,7 @@ from telethon.errors.rpcerrorlist import (
     ParticipantJoinMissingError,
     ChatSendMediaForbiddenError,
 )
-from pyUltroid import HNDLR, LOGS, asst, udB, vcClient
+from pyUltroid import HNDLR, LOGS, asst, udB, vcself
 from pyUltroid._misc._decorators import compile_pattern
 from pyUltroid.fns.helper import (
     bash,
@@ -61,12 +61,15 @@ except ImportError:
     VideosSearch = None
 
 from strings import get_string
+from pytgcalls import PyTgCalls
 
+call = PyTgCalls(self)
+                
 asstUserName = asst.me.username
 LOG_CHANNEL = udB.get_key("LOG_CHANNEL")
 ACTIVE_CALLS, VC_QUEUE = [], {}
 MSGID_CACHE, VIDEO_ON = {}, {}
-CLIENTS = {}
+selfS = {}
 
 
 def VC_AUTHS():
@@ -79,18 +82,18 @@ class Player:
         self._chat = chat
         self._current_chat = event.chat_id if event else LOG_CHANNEL
         self._video = video
-        if CLIENTS.get(chat):
-            self.group_call = CLIENTS[chat]
+        if selfS.get(chat):
+            self.group_call = selfS[chat]
         else:
-            _client = GroupCallFactory(
-                vcClient, GroupCallFactory.MTPROTO_CLIENT_TYPE.TELETHON,
+            _self = GroupCallFactory(
+                vcself, GroupCallFactory.MTPROTO_self_TYPE.TELETHON,
             )
-            self.group_call = _client.get_group_call()
-            CLIENTS.update({chat: self.group_call})
+            self.group_call = _self.get_group_call()
+            selfS.update({chat: self.group_call})
 
     async def make_vc_active(self):
         try:
-            await vcClient(
+            await vcself(
                 functions.phone.CreateGroupCallRequest(
                     self._chat, title="🎧 Ultroid Music 🎶"
                 )
@@ -107,10 +110,10 @@ class Player:
             VIDEO_ON.clear()
             await asyncio.sleep(3)
         if self._video:
-            for chats in list(CLIENTS):
+            for chats in list(selfS):
                 if chats != self._chat:
-                    await CLIENTS[chats].stop()
-                    del CLIENTS[chats]
+                    await selfS[chats].stop()
+                    del selfS[chats]
             VIDEO_ON.update({self._chat: self.group_call})
         if self._chat not in ACTIVE_CALLS:
             try:
@@ -160,7 +163,7 @@ class Player:
             text = f"<strong>🎧 Now playing #{pos}: <a href={link}>{title}</a>\n⏰ Duration:</strong> <code>{dur}</code>\n👤 <strong>Requested by:</strong> {from_user}"
 
             try:
-                xx = await vcClient.send_message(
+                xx = await vcself.send_message(
                     self._current_chat,
                     f"<strong>🎧 Now playing #{pos}: <a href={link}>{title}</a>\n⏰ Duration:</strong> <code>{dur}</code>\n👤 <strong>Requested by:</strong> {from_user}",
                     file=thumb,
@@ -169,7 +172,7 @@ class Player:
                 )
 
             except ChatSendMediaForbiddenError:
-                xx = await vcClient.send_message(
+                xx = await vcself.send_message(
                     self._current_chat, text, link_preview=False, parse_mode="html"
                 )
             MSGID_CACHE.update({chat_id: xx})
@@ -179,15 +182,15 @@ class Player:
 
         except (IndexError, KeyError):
             await self.group_call.stop()
-            del CLIENTS[self._chat]
-            await vcClient.send_message(
+            del selfS[self._chat]
+            await vcself.send_message(
                 self._current_chat,
                 f"• Successfully Left Vc : <code>{chat_id}</code> •",
                 parse_mode="html",
             )
         except Exception as er:
             LOGS.exception(er)
-            await vcClient.send_message(
+            await vcself.send_message(
                 self._current_chat,
                 f"<strong>ERROR:</strong> <code>{format_exc()}</code>",
                 parse_mode="html",
@@ -198,14 +201,14 @@ class Player:
         done, err = await self.startCall()
 
         if done:
-            await vcClient.send_message(
+            await vcself.send_message(
                 self._current_chat,
                 f"• Joined VC in <code>{chat_id}</code>",
                 parse_mode="html",
             )
 
             return True
-        await vcClient.send_message(
+        await vcself.send_message(
             self._current_chat,
             f"<strong>ERROR while Joining Vc -</strong> <code>{chat_id}</code> :\n<code>{err}</code>",
             parse_mode="html",
@@ -250,7 +253,7 @@ def vc_asst(dec, **kwargs):
                     parse_mode="html",
                 )
 
-        vcClient.add_event_handler(
+        vcself.add_event_handler(
             vc_handler,
             events.NewMessage(**kwargs),
         )
