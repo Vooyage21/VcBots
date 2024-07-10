@@ -23,7 +23,7 @@ import traceback
 from time import time
 from traceback import format_exc
 
-from pytgcalls import GroupCallFactory
+from pytgcalls.types import MediaStream
 from pytgcalls.exceptions import GroupCallNotFoundError
 from telethon.errors.rpcerrorlist import (
     ParticipantJoinMissingError,
@@ -85,8 +85,8 @@ class Player:
         if selfS.get(chat):
             self.group_call = selfS[chat]
         else:
-            _self = GroupCallFactory(
-                vcself, GroupCallFactory.MTPROTO_self_TYPE.TELETHON,
+            _self = MediaStream(
+                vcself, MediaStream.MTPROTO_self_TYPE.TELETHON,
             )
             self.group_call = _self.get_group_call()
             selfS.update({chat: self.group_call})
@@ -275,6 +275,7 @@ def add_to_queue(chat_id, song, song_name, link, thumb, from_user, duration):
             "song": song,
             "title": song_name,
             "link": link,
+            "yt" : ytdl,
             "thumb": thumb,
             "from_user": from_user,
             "duration": duration,
