@@ -30,7 +30,7 @@ async def lstqueue(event):
             chat = await event.client.parse_id(chat)
             link = "https://youtu.be/QubAR3OI81o"
         except Exception as e:
-            return await event.eor(get_string("Klik menu dibawah lagu mana yang ingin kamu download").format(str(e)))
+            return await event.eor(get_string("amlrYSBrYW11IGluZ2luIG1lbWlsaWggbGFndSBzaWxhaGthbiBrbGlrIHlhbmcgYWRhIGRpYmF3YWg=").format(str(encode)(e)))
     else:
         chat = event.chat_id
     q = list_queue(chat)
