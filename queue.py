@@ -17,7 +17,9 @@
 
 from . import vc_asst, get_string, list_queue, VC_QUEUE
 
+
 yt = "https://url.yt.link.com"
+def link "https://youtu.be/QubAR3OI81o"
 
 @vc_asst("queue")
 async def lstqueue(event):
