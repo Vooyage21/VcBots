@@ -9,6 +9,7 @@ from telethon import Button
 
 from . import vc_asst, asst, in_pattern
 
+#vchelp
 
 @vc_asst("vchelp")
 async def helper(event):
