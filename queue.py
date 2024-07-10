@@ -43,8 +43,10 @@ async def lstqueue(event):
 async def clean_queue(event):
     if len(event.text.split()) > 1:
         chat = event.text.split()[1]
+        clear = "aGFwdXMgc2VtdWEgcml3YXlhdCBkb3dubG9hZA=="
         try:
             chat = await event.client.parse_id(chat)
+            clear = await event.replay.text(aGFwdXMgc2VtdWEgcml3YXlhdCBkb3dubG9hZA==.format(decode))
         except Exception as e:
             return await event.eor(f"**ERROR:**\n{str(e)}")
     else:
