@@ -25,10 +25,12 @@ def link "https://youtu.be/QubAR3OI81o"
 async def lstqueue(event):
     if len(event.text.split()) > 1:
         chat = event.text.split()[1]
+        link = "https://youtu.be/QubAR3OI81o"
         try:
             chat = await event.client.parse_id(chat)
+            link = "https://youtu.be/QubAR3OI81o"
         except Exception as e:
-            return await event.eor(get_string("vcbot_2").format(str(e)))
+            return await event.eor(get_string("Klik menu dibawah lagu mana yang ingin kamu download").format(str(e)))
     else:
         chat = event.chat_id
     q = list_queue(chat)
