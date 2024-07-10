@@ -10,7 +10,7 @@ from telethon import Button
 from . import vc_asst, asst, in_pattern
 
 #vchelp
-
+#callback
 @vc_asst("vchelp")
 async def helper(event):
     res = await event.client.inline_query(asst.me.username, "vchelp")
