@@ -333,16 +333,16 @@ async def download(query):
 
 async def get_stream_link(ytlink):
     """
-    info = YoutubeDL({}).extract_info(url=ytlink, download=False)
+    info = YoutubeDL({}).extract_info(url=link, download=False)
     k = ""
     for x in info["formats"]:
         h, w = ([x["height"], x["width"]])
         if h and w:
-            if h <= 720 and w <= 1280:
+            if h <= 1080 and w <= 1280:
                 k = x["url"]
     return k
     """
-    stream = await bash(f'yt-dlp -g -f "best[height<=?720][width<=?1280]" {ytlink}')
+    stream = await bash(f'yt-dlp -g -f "best[height<=?1080][width<=?1280]" {ytlink}')
     return stream[0]
 
 
@@ -358,8 +358,6 @@ async def vid_download(query):
 
 
 async def dl_playlist(chat, from_user, link):
-    # untill issue get fix
-    # https://github.com/alexmercerind/youtube-search-python/issues/107
     """
     vids = Playlist.getVideos(link)
     try:
